@@ -1,0 +1,19 @@
+#number-amount {
+    font-size: 55px;
+}
+
+#time-chart .x.axis text {
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+}
+
+.dc-chart g.row text {
+    fill: black;
+
+}
+
+.btn {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	margin-left: 90px;
+}
