@@ -1,6 +1,8 @@
+
+
 queue()
     .defer(d3.json, "/data")
-    .await(makeGraphs);
+	.await(makeGraphs);
 
 function makeGraphs(error, recordsJson) {
 	var records = recordsJson;
@@ -130,6 +132,7 @@ function makeGraphs(error, recordsJson) {
 			//gradient: {0.3: 'blue', 0.5: 'lime', 0.7: 'yellow', 0.9: 'red'}
 		}).addTo(map);
 	};
+	
 	drawMap();
 		
 	dcCharts = [timeChart, ufChart, topCityChart, numberChart];
@@ -205,5 +208,5 @@ function makeGraphs(error, recordsJson) {
       })
       dc.redrawAll();
     }
-	
+	$(".se-pre-con").fadeOut("slow");
 };
