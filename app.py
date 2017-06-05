@@ -15,10 +15,10 @@ def get_data():
     df2 = pd.read_csv("data/BFTOTAISUF.csv", sep = "\t", encoding = "latin1")
     df = df1.merge(df2,how='left', left_on='city', right_on='NOME_MUNICIPIO')
 	#Get n_samples records
-    n_samples = len(df.index)
-    df = df.sample(n=n_samples)
+    #n_samples = len(df.index)
+    #df = df.sample(n=n_samples)
     df = df.dropna()
-    df = df[["city", "uf", "latitude", "longitude", "SUM_PARCELAS", "ANO_MES_PAGAMENTO"]][:1000]
+    df = df[["city", "uf", "latitude", "longitude", "SUM_PARCELAS", "ANO_MES_PAGAMENTO"]][:400000]
     return df.to_json(orient='records')	
 
 if __name__ == "__main__":

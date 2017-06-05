@@ -53,7 +53,8 @@ function makeGraphs(error, recordsJson) {
 		.dimension(yearmonthDim)
 		.group(yearmonthGroup)
 		.transitionDuration(500)
-		.x(d3.time.scale().domain([2004,2016]))
+		.x(d3.time.scale().domain([2004,2010]))
+		.filter(dc.filters.RangedFilter(2004,2005))
 		.elasticY(true)
 		.yAxis().ticks(6);
 
@@ -68,7 +69,7 @@ function makeGraphs(error, recordsJson) {
         .xAxis().ticks(4);
 	
 	topCityChart
-		.width(600)
+		.width(550)
 		.height(240)
 		.slicesCap(5)
 		.innerRadius(30)
@@ -100,9 +101,15 @@ function makeGraphs(error, recordsJson) {
 		.valueAccessor(function(d){return d; })
 		.group(numbers);
 
-	var map = L.map('map');
+	var map = L.map('map',{
+       fullscreenControl: true,
+       fullscreenControlOptions: {
+           position: 'topleft'
+	   }
+    });
+	
 	var drawMap = function(){
-		map.setView([-23.5475, -46.63611], 3);
+		map.setView([-15.77972, -41.55972], 4);
 		mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 		L.tileLayer(
 			'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -118,8 +125,9 @@ function makeGraphs(error, recordsJson) {
 		var heat = L.heatLayer(geoData,{
 			radius: 10,
 			blur: 20, 
-			max: 1000000,
-			maxZoom: 1,
+			max: 100000000,
+			maxZoom: 1
+			//gradient: {0.3: 'blue', 0.5: 'lime', 0.7: 'yellow', 0.9: 'red'}
 		}).addTo(map);
 	};
 	drawMap();
