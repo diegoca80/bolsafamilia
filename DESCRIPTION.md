@@ -60,3 +60,64 @@ Para manipular os arquivos CSV foram utilizados scripts de computador desenvolvi
 
 Para manipular os arquivos Shapefile foi utilizada a suíte QGIS que permite manipular os arquivos e gerar várias saídas além dos contornos que podem ser usados tanto pelo Google Maps, Google Earth ou mesmo como recursos para serem manipulados em desenvolvimento de aplicativos e páginas WEB. Uma saída da suíte é o formato GeoJSON citado acima.
 
+# Visualizações
+
+???????????????????????????????????????????????????????????????????????
+
+# Premissas
+
+Considerando que os dados trabalhados tem relação direta com localidades no território brasileiro, a premissa diretriz para o projeto de visualização foi a representação dos mesmos utilizando os mapas dos estados e municípios como base.
+
+Para tornar a comparação entre regiões mais intuitiva foram também consideradas diferentes escalas de cor e como melhor atribuir colorações aos valores dos pagamentos do programa BF.
+
+# Resultados
+
+???????????????????????????????????????????????????????????????????????
+
+# Lições aprendidas
+
+O trabalho sobre o grande volume de dados foi um dos maiores desafios para a realização do projeto. Dado que muitas ferramentas tradicionais não estão preparadas para manipular arquivos tão grandes, houve uma dificuldade inicial para definir e estruturar a cadeia de processamento. Dessa forma uma grande quantidade de tempo e esforço foram aplicados para esta que é uma etapa anterior à visualização propriamente.
+ 
+Cada arquivo (mensal) do BF compactado ocupa aproximadamente 350 MB. Descompactado, o tamanho salta para mais de 1,5 GB. Como há muita informação redundante, optou-se por gerar um novo arquivo somente com o que seria relevante para as transformações descritas acima.
+ 
+Houve também uma preocupação em manipular e transformar o conjunto completo de dados, ao invés de tratar um subconjunto por vez. Essa abordagem trouxe maior robustez à solução, ao custo de um incremento de tempo de desenvolvimento. Dessa forma ficou evidente que um correto dimensionamento do esforço, com redução do escopo e balanceamento do tempo dedicado a cada etapa, são fundamentais para o andamento de um projeto de visualização de dados.
+ 
+Uma dificuldade encontrada, comum para grandes volumes de dados, foi a conversão de formatos adequados para as ferramentas utilizadas.
+ 
+Outra dificuldade interessante, por se tratar de séries históricas de dados, foi conferir a exatidão (acurácia) dos nomes dos municípios brasileiros, pois além da adição de novos municípios a cada ano, existe também a mudança de nomes de municípios. São ocorrências pequenas, mas que aconteceram e exigiram esforço adicional para contorná-las. Uma solução que teria dado um ganho ao projeto seria ter utilizado um código (único) para identificar cada UF+Município. Como os shapefiles do IBGE já contém um código único, este teria sido uma boa escolha.
+
+???????????????????????????????????????????????????????????????????????TBD: falar sobre dificuldade de tratar arquivos com informações geográficas.
+
+# Oportunidades de melhoria
+
+O projeto de visualização de dados do programa BF foi desenvolvido utilizando os dados disponibilizados até a data de março de 2017, quando foi iniciado. Para a atualização da visualização com dados mais recentes que esta data seria necessária a execução manual da cadeia de processamento, compreendendo a filtragem de colunas, inclusão no banco de dados, geração das tabelas sumarizadas e integração ao formato cartográfico. Estes passos teriam que ser repetidos mensalmente para manter a visualização sempre atualizada com os últimos dados, a cada novo arquivo CSV lançado.
+ 
+Portanto a primeira melhoria seria a automatização da verificação e inclusão de novas tabelas CSV. Um script poderia ser executado em um servidor para verificar se novos dados estão disponíveis e, caso encontrados, adicioná-los à visualização.
+ 
+Uma outra ideia que surgiu foi criar um framework que pudesse ser usado em qualquer informação disponibilizada pelo site Portal da Transparência, permitindo que mesmo a partir de grandes volumes de dados um página sintetizando as informações e mostrando-as num painel integrado a um mapa fosse disponibilizada ao usuário final. Seria um framework de ETL (Extract-Transform-Load) que mostraria séries históricas (baseadas no tempo – ano/mês).
+
+Basicamente, todos os arquivos que estão no site do governo trazem as seguintes informações (há outras informações que não interessam para a proposta do framework):
+
+1. UF: qual estado onde o recurso foi gasto ou disponibilizado
+
+2. Município: qual cidade onde o recurso foi gasto ou disponibilizado
+
+3. Pessoa: que foi o beneficiado, que tanto pode ser uma pessoa física (como no caso do BF) como pode ser uma pessoa física (o próprio município ou órgão ou instituição que recebeu o recurso)
+
+4. Identificação única da pessoa: no caso do BF foi o Número de Inscrição Social (NIS). Trata-se de uma informação opcional uma vez que já temos a identificação da pessoa
+
+5. Valor: quantidade monetária paga à pessoa
+
+6. Ano e Mês do Pagamento: informação contida no próprio nome do arquivo disponibilizada
+
+7. Ano e Mês da Competência: alguns pagamentos são retroativos.
+
+No framework, uma vez escolhida a área que seria analisada, uma ferramenta para obter os dados dos arquivos CSV e convertê-los para o modelo do framework faria a conversão necessária. Uma vez, convertidos, as rotinas de sumarização e/ou agrupamento fariam as atualizações necessárias para deixar os dados no formato que o framework utilizaria para a visualização.
+ 
+Numa interface de configuração, o usuário definiria o nome do novo programa/área de análise e selecionaria os dados obtidos no passo anterior.
+ 
+O framework também teria diversos indicadores tais como população, IDH, índice de desemprego, etc... prontos para serem usados pelo usuário
+ 
+No painel do framework, o usuário faria a escolha da série histórica que desejaria usar e também os indicadores escolhidos. Para cada escolha, uma janela no painel seria adicionada. A visualização da série histórica também poderia ser feita no mapa correspondente do estado/município.
+
+
