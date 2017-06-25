@@ -79,7 +79,7 @@ function makeGraphs(recordsJson) {
 		.dimension(monthDim)
 		.group(monthGroup)
 		.transitionDuration(500)
-		.x(d3.time.scale().domain([01,12]))
+		.x(d3.time.scale().domain([01,13]))
 		.filter(dc.filters.RangedFilter(11,12))
 		.elasticY(true)
 		.yAxis().ticks(6);
