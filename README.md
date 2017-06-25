@@ -1,35 +1,29 @@
-# Authors
+# Autores
 
-- Diego Alves
-- Adriano Orsoni
+- Diego Cardoso Alves
+- Adriano Orsoni Diniz
+- Euline Marcos Rodrigues
 
-# Dependencies
+# Dependências
 
-You need Python 3 libraries: Pandas, Flask.
+Todo o processamento dos dados foi previado realizado e este repositório contém todos arquivos necessários para execução do projeto.
 
-The easiest way to install Pandas is to install it as part of the Anaconda distribution.
+Entretando, para executá-lo em sua máquina local, você precisará de uma distribuição Apache. Neste caso, recomendamos o Xampp(https://www.apachefriends.org/pt_br/index.html) que possui fácil instalação.
 
-You can install Flask using pip.
+# Como executar o projeto
 
-	pip install flask
+1. Instalar o Xampp no sistema operacional
 
-# How to run the code
+2. Abrir o Xampp e iniciar o Apache.
 
-1. Install all Python dependencies
+3. Inserir a pasta do projeto deste repositório dentro da pasta htdocs contida no diretório de instalação do Xampp.
 
-2. Open command terminal and cd to root folder:
-> cd []\tourists-data-visualization
+4. Abrir seu navegador e acessar http://localhost/bolsafamilia
 
-3. Run Python script:
-> python app.py
+# Como interagir com as visualizações
 
-4. Open web-browser and access local server http://0.0.0.0:8000/
-
-
-# How to interact with plots
-
-1. Graph 'Tourists arrival per year'
-- Select range of years to display;
+1. Gráfico 'Valor recebido em R$ por Ano'
+- Selecione intervalo de anos para visualizar;
 - Move selected region left or right;
 - Expand or shrink selected region;
 - Click outside of the selected region to select all years.
