@@ -62,7 +62,12 @@ Para manipular os arquivos Shapefile foi utilizada a suíte QGIS que permite mani
 
 # Visualizações
 
-???????????????????????????????????????????????????????????????????????
+A página resultados permite duas visualizações interativas. 
+ 
+A primeira é um painel (dashboard) onde o usuário pode interagir com as diferentes dimensões e em forma gráfica tirar ou confirmar suas próprias interpretações sobre o programa Bolsa Família. Também é possível fazer agrupamentos nesta visualização escolhendo mais de um fato.
+ 
+A segunda é um mapa do Brasil, inicialmente mostrado com os contornos dos estados. Ao interagir com o contorno de cada estado, é possível ver os valores do programa em um determinado período. Período este que também pode ser alterado. Ao aumentar o nível de detalhe (ou zoom) no mapa, o contorno mostrado passa a ser dos municípios do estado escolhido.  
+
 
 # Premissas
 
@@ -72,7 +77,7 @@ Para tornar a comparação entre regiões mais intuitiva foram também consideradas 
 
 # Resultados
 
-???????????????????????????????????????????????????????????????????????
+Como resultados expressivos do projeto, podemos destacar a possibilidade de navegar em diversas dimensões (UF, estado, ano e mês) para ver os fatos que se deseja interpretar e avaliar (Data mining). É possível visualizar número de beneficiados, valores das parcelas, número de municípios das parcelas considerando as dimensões acima. Além disso, a visualização no mapa permite verificar detalhes mais específicos das localidades consideradas.
 
 # Lições aprendidas
 
@@ -86,15 +91,15 @@ Uma dificuldade encontrada, comum para grandes volumes de dados, foi a conversão
  
 Outra dificuldade interessante, por se tratar de séries históricas de dados, foi conferir a exatidão (acurácia) dos nomes dos municípios brasileiros, pois além da adição de novos municípios a cada ano, existe também a mudança de nomes de municípios. São ocorrências pequenas, mas que aconteceram e exigiram esforço adicional para contorná-las. Uma solução que teria dado um ganho ao projeto seria ter utilizado um código (único) para identificar cada UF+Município. Como os shapefiles do IBGE já contém um código único, este teria sido uma boa escolha.
 
-???????????????????????????????????????????????????????????????????????TBD: falar sobre dificuldade de tratar arquivos com informações geográficas.
+Integrar as informações geográficas também foi um grande desafio. Como os dados do Bolsa Família possuem informações de municípios brasileiros, foi decidido visualizar um mapa com os contornos destes municípios, além é claro dos estados. Para isto foram feitas diversas experiências em manipular arquivos cartográficos e adicioná-los a uma página na internet. Para isto foi decidido usar o formato GeoJSON, que é um padrão aberto projetado para representar características geográficas simples, juntamente com seus atributos não espaciais, com base na Notação de Objeto JavaScript.
 
 # Oportunidades de melhoria
 
-O projeto de visualização de dados do programa BF foi desenvolvido utilizando os dados disponibilizados até a data de março de 2017, quando foi iniciado. Para a atualização da visualização com dados mais recentes que esta data seria necessária a execução manual da cadeia de processamento, compreendendo a filtragem de colunas, inclusão no banco de dados, geração das tabelas sumarizadas e integração ao formato cartográfico. Estes passos teriam que ser repetidos mensalmente para manter a visualização sempre atualizada com os últimos dados, a cada novo arquivo CSV lançado.
+O projeto de visualização de dados do programa BF foi desenvolvido utilizando os dados disponibilizados até o ano de 2016. Para a atualização da visualização com dados mais recentes que esta data seria necessária a execução manual da cadeia de processamento, compreendendo a filtragem de colunas, inclusão no banco de dados, geração das tabelas sumarizadas e integração ao formato cartográfico. Estes passos teriam que ser repetidos mensalmente para manter a visualização sempre atualizada com os últimos dados, a cada novo arquivo CSV lançado.
  
 Portanto a primeira melhoria seria a automatização da verificação e inclusão de novas tabelas CSV. Um script poderia ser executado em um servidor para verificar se novos dados estão disponíveis e, caso encontrados, adicioná-los à visualização.
  
-Uma outra ideia que surgiu foi criar um framework que pudesse ser usado em qualquer informação disponibilizada pelo site Portal da Transparência, permitindo que mesmo a partir de grandes volumes de dados um página sintetizando as informações e mostrando-as num painel integrado a um mapa fosse disponibilizada ao usuário final. Seria um framework de ETL (Extract-Transform-Load) que mostraria séries históricas (baseadas no tempo – ano/mês).
+Uma outra ideia que surgiu foi criar um framework que pudesse ser usado em qualquer informação disponibilizada pelo site Portal da Transparência, permitindo que mesmo a partir de grandes volumes de dados um página sintetizando as informações e mostrando-as num painel integrado a um mapa fosse disponibilizada ao usuário final. Seria um framework de ETL (Extract-Transform-Load) que mostraria séries históricas (baseadas no tempo ano/mês).
 
 Basicamente, todos os arquivos que estão no site do governo trazem as seguintes informações (há outras informações que não interessam para a proposta do framework):
 

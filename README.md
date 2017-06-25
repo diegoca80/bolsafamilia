@@ -64,7 +64,11 @@ As etapas de desenvolvimento assim como todo o contexto do projeto podem ser enc
 - Passe o mouse em cima da cidade e os valores correspondentes serão exibidos acima do mapa;
 - Clique em qualquer cidade para voltar a visualização geral do mapa
 
-# Example:
+# Exemplo Dashboard:
 
 ![Alt text](static/img/dashboard.gif?raw=true "Visualizacao de Dados do Bolsa Familia")
+
+# Exemplo Mapa:
+
+![Alt text](static/img/mapa.gif?raw=true "Visualizacao de Dados do Bolsa Familia")
 

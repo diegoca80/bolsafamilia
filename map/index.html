@@ -1,0 +1,62 @@
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html"; charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <title>Visualização de Dados do Bolsa Família</title>
+  <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+	<div id="controls" class="nicebox">
+	  <div>
+        <select id="year_select">
+          <option value="2011">2011</option>
+          <option value="2012">2012</option>
+          <option value="2013">2013</option>
+          <option value="2014">2014</option>
+          <option value="2015">2015</option>
+          <option value="2016" selected>2016</option>
+        </select>
+        <select id="month_select">
+          <option value="01">Jan</option>
+          <option value="02">Fev</option>
+          <option value="03">Mar</option>
+          <option value="04">Abr</option>
+          <option value="05">Mai</option>
+          <option value="06">Jun</option>
+          <option value="07">Jun</option>
+          <option value="08">Ago</option>
+          <option value="09">Set</option>
+          <option value="10">Out</option>
+          <option value="11">Nov</option>
+          <option value="12" selected>Dez</option>
+          <option value="total">Todos</option>
+        </select>
+	  </div>
+	  <div id="legend">
+		<div id="census-min">min</div>
+		<div class="color-key"><span id="data-caret">&#x25c6;</span></div>
+		<div id="census-max">max</div>
+	  </div>
+	</div>
+	<div id="data-box" class="nicebox">
+	  <label id="data-label" for="data-value"></label>
+	  <span id="data-value"></span>
+	  <label id="data-label-2" for="data-value-2"></label>
+	  <span id="data-value-2"></span>
+	  <label id="data-label-3" for="data-value-3"></label>
+	  <span id="data-value-3"></span>
+	</div>
+	<script src="jquery.min.js"></script>
+	<script src="js.js"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+      google.charts.load('current', {'packages': ['table', 'map', 'corechart']});
+	</script>
+	<script async defer
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE_g3NqPoCfUCt7E0O3M9Lyz-xU1uuMcs&callback=initMap">
+	</script>
+	<div id="map"></div>
+	
+	</body>
+</html>

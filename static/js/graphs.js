@@ -1,7 +1,3 @@
-/*queue()
-    .defer(d3.json, "/data")
-	.await(makeGraphs);
-*/
 $.getJSON('data/records.json', function (data) {
 	makeGraphs(data);
 });
@@ -132,120 +128,8 @@ function makeGraphs(recordsJson) {
 		.formatNumber(d3.format("d"))
 		.valueAccessor(function(d){return d; })
 		.group(parcelas);
-	/*
-	var map = L.map('map',{
-       fullscreenControl: true,
-       fullscreenControlOptions: {
-           position: 'topleft'
-	   }
-    });
-	
-	var drawMap = function(){
-		map.setView([-15.77972, -41.55972], 4);
-		mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-		L.tileLayer(
-			'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; ' + mapLink + ' Contributors',
-				maxZoom: 15,
-			}).addTo(map);
 
-		//HeatMap
-		var geoData = [];
-		_.each(allDim.top(Infinity), function (d) {
-			geoData.push([d["latitude"], d["longitude"], d["SUM_PARCELAS"]]);
-		});
-		var heat = L.heatLayer(geoData,{
-			radius: 10,
-			blur: 20, 
-			max: 100000000,
-			maxZoom: 1
-			//gradient: {0.3: 'blue', 0.5: 'lime', 0.7: 'yellow', 0.9: 'red'}
-		}).addTo(map).on('mouseover', onClick);
-	};
-	
-	function onClick(e) {
-		alert(this.getLatLng());
-	}
-	
-	drawMap();
-		
-	dcCharts = [timeChart, ufChart, topCityChart, numberChart];
-	
-	_.each(dcCharts, function (dcChart) {
-    dcChart.on("filtered", function (chart, filter) {
-        map.eachLayer(function (layer) {
-          map.removeLayer(layer)
-        }); 
-    drawMap();
-    });
-	});
-
-	dc.renderAll();
-	
-    //map listeners
-    map.on('moveend', function() {
-      updateMapFilter()
-    })
-    map.on('zoomend', function() {
-      updateMapFilter()
-    })
-
-
-	function updateMapFilter() {
-  
-      var bounds = map.getBounds(),
-        n=bounds._northEast.lat,
-        e=bounds._northEast.lng,
-        s=bounds._southWest.lat,
-        w=bounds._southWest.lng;
-      var boundsFeature = {
-        type: 'Feature',
-        geometry: {
-          type:'Polygon',
-          coordinates: [
-            [
-              [
-                w,
-                s
-              ],
-              [
-                w,
-                n
-              ],
-              [
-                e,
-                n
-              ],
-              [
-                e,
-                s
-              ],
-              [
-                w,
-                s
-              ]
-            ]
-          ]
-        }
-      }
-      allDim.filter(function(d) {
-        //make feature
-        var point = {
-          type: 'Feature',
-          geometry: {
-			  type: 'Point',
-			  coordinates: [ +d["longitude"], +d["latitude"] ]
-		  }
-        }
-  
-        return turf.inside(point, boundsFeature)
-      })
-      dc.redrawAll();
-    }
-	*/
 	$(".se-pre-con").fadeOut("slow");
-	
-	
 	
 	dcCharts = [timeChart, ufChart, topCityChart, parcelasChart, timeMonthChart, populacaoChart];
 	
