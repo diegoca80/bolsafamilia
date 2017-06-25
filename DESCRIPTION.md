@@ -13,7 +13,6 @@ Contudo, devido ao volume imenso dos dados, fica complicado baixar cada CSV ou s
 A nossa motivação foi tornar o grande volume de dados disponibilizados mais acessíveis ao usuário comum. Para verificar se isto seria possível, escolhemos os dados do programa Bolsa Família (BF).
  
 O Bolsa Família é um programa social que procura garantir às famílias o direito à alimentação e o acesso à educação e à saúde. A população alvo do programa é constituída por famílias em situação de pobreza ou extrema pobreza, ou seja, aquelas que têm renda mensal de até R$ 85,00 ou com renda entre R$ 85,01 até R$ 170,00 desde que tenham em sua composição gestantes e crianças ou adolescentes entre 0 e 17 anos. Para se candidatar ao programa, é necessário que a família esteja inscrita no Cadastro Único para Programas Sociais do Governo Federal, com seus dados atualizados há menos de 2 anos. A seleção das famílias é feita pelo Ministério do Desenvolvimento Social e Combate à Fome, com base nos dados inseridos pelas prefeituras no Cadastro Único dos Programas Sociais do Governo Federal. A seleção é mensal, e os critérios usados são a composição familiar e a renda de cada integrante da família.
-
  
 # Proposta
  
@@ -60,6 +59,4 @@ Os contornos dos mapas foram obtidos dos arquivos Shapefile. O formato shapefile
 Para manipular os arquivos CSV foram utilizados scripts de computador desenvolvidos nas linguagens Python e SQL. A transcrição dos arquivos de dados brutos foi feita em SQL para que todo o armazenamento fosse baseado em Banco de Dados Relacional. Para a conversão/integração aos dados cartográficos foram utilizadas as bibliotecas json e pandas em linguagem Python.
 
 Para manipular os arquivos Shapefile foi utilizada a suíte QGIS que permite manipular os arquivos e gerar várias saídas além dos contornos que podem ser usados tanto pelo Google Maps, Google Earth ou mesmo como recursos para serem manipulados em desenvolvimento de aplicativos e páginas WEB. Uma saída da suíte é o formato GeoJSON citado acima.
-
-
 
