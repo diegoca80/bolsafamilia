@@ -1,33 +1,38 @@
-
-
-queue()
+/*queue()
     .defer(d3.json, "/data")
 	.await(makeGraphs);
+*/
+$.getJSON('data/records.json', function (data) {
+	makeGraphs(data);
+});
 
-function makeGraphs(error, recordsJson) {
+function makeGraphs(recordsJson) {
 	var records = recordsJson;
 	console.log(records);
 	records.forEach(function(d) {
-    d["longitude"] = +d["longitude"];
-    d["latitude"] = +d["latitude"];
-	d["sum"] = +d["SUM_PARCELAS"];
+    d["POPULACAO"] = +d["POPULACAO"];
+    d["PORC_BF"] = +d["PORC_BF"];
+	d["SUM_PARCELAS"] = +d["SUM_PARCELAS"];
 	});
 	//Create a Crossfilter instance
 	var ndx = crossfilter(records);
 	//Define Dimensions
-	var cityDim = ndx.dimension(function(d) { return d["city"]; });
-	var ufDim = ndx.dimension(function(d) { return d["uf"]; });
+	var cityDim = ndx.dimension(function(d) { return d["NOME_MUNICIPIO"]; });
+	var ufDim = ndx.dimension(function(d) { return d["UF"]; });
 	var valueDim = ndx.dimension(function(d) { return d["SUM_PARCELAS"]; });
-	var yearmonthDim = ndx.dimension(function(d) { return d["ANO_MES_PAGAMENTO"]; });
+	var yearDim = ndx.dimension(function(d) { return d["ANO_PAGAMENTO"]; });
+	var monthDim = ndx.dimension(function(d) { return d["MES_PAGAMENTO"]; });
 	var allDim = ndx.dimension(function(d) {return d;});
-
+	
 	//Group Data
 	var cityGroup = cityDim.group().reduceSum(function(d) {return d["SUM_PARCELAS"];});
 	var ufGroup = ufDim.group().reduceSum(function(d) {return d["SUM_PARCELAS"];});
-	var yearmonthGroup = yearmonthDim.group().reduceSum(function(d) {return d["SUM_PARCELAS"];});
+	var yearGroup = yearDim.group().reduceSum(function(d) {return d["SUM_PARCELAS"];});
+	var monthGroup = monthDim.group().reduceSum(function(d) {return d["SUM_PARCELAS"];});
 	var valueGroup = valueDim.group();
-	var numbers = ndx.groupAll().reduceSum(function(d) {return d["SUM_PARCELAS"];});
-    
+	var parcelas = ndx.groupAll().reduceSum(function(d) {return d["SUM_PARCELAS"];});
+    var populacao = ndx.groupAll().reduceSum(function(d) {return d["COUNT_BENEFICIADOS"];});
+	
 	function getTops(source_group) {
     return {
         all: function () {
@@ -38,31 +43,56 @@ function makeGraphs(error, recordsJson) {
 	cityGroup5 = getTops(cityGroup);
 
 	//Define values (to be used in charts)
-	var minDate = yearmonthDim.bottom(1)[0]["ANO_MES_PAGAMENTO"];
-	var maxDate = yearmonthDim.top(1)[0]["ANO_MES_PAGAMENTO"];
-
+	var minDate = yearDim.bottom(1)[0]["ANO_PAGAMENTO"];
+	var maxDate = yearDim.top(1)[0]["ANO_PAGAMENTO"];
+	var minMonth = monthDim.bottom(1)[0]["MES_PAGAMENTO"];
+	var maxMonth = monthDim.top(1)[0]["MES_PAGAMENTO"];
 
     //Charts
 	var timeChart = dc.barChart("#time-chart");
+	var timeMonthChart = dc.barChart("#time-month-chart");
 	var ufChart = dc.rowChart("#uf-row-chart");
-	var numberChart = dc.numberDisplay("#number-amount");
+	var parcelasChart = dc.numberDisplay("#number-amount");
+	var populacaoChart = dc.numberDisplay("#population-amount");
 	var topCityChart = dc.pieChart("#top-5-cities");
 	
+	populacaoChart
+		.formatNumber(d3.format("d"))
+		.valueAccessor(function(d){return d; })
+		.group(populacao);
+	
 	timeChart
-		.width(650)
+		.width(450)
 		.height(250)
 		.margins({top: 10, right: 50, bottom: 30, left: 80})
-		.dimension(yearmonthDim)
-		.group(yearmonthGroup)
+		.dimension(yearDim)
+		.group(yearGroup)
 		.transitionDuration(500)
-		.x(d3.time.scale().domain([2004,2010]))
-		.filter(dc.filters.RangedFilter(2004,2005))
+		.x(d3.time.scale().domain([2011,2017]))
+		.filter(dc.filters.RangedFilter(2016,2017))
 		.elasticY(true)
 		.yAxis().ticks(6);
-
+		
+		
+	timeChart.xAxis().tickFormat(d3.format('f'));
+		
+	timeMonthChart
+		.width(450)
+		.height(250)
+		.margins({top: 10, right: 50, bottom: 30, left: 80})
+		.dimension(monthDim)
+		.group(monthGroup)
+		.transitionDuration(500)
+		.x(d3.time.scale().domain([01,12]))
+		.filter(dc.filters.RangedFilter(11,12))
+		.elasticY(true)
+		.yAxis().ticks(6);
+	
+	timeMonthChart.xAxis().tickFormat(d3.format('f'));
+	
 	ufChart
         .width(400)
-        .height(250)
+        .height(555)
         .dimension(ufDim)
         .group(ufGroup)
 		.colors("#7F97E0")
@@ -72,7 +102,7 @@ function makeGraphs(error, recordsJson) {
 	
 	topCityChart
 		.width(550)
-		.height(240)
+		.height(320)
 		.slicesCap(5)
 		.innerRadius(30)
 		.drawPaths(true)
@@ -98,11 +128,11 @@ function makeGraphs(error, recordsJson) {
               .text(function(d) { return d.data; });
     });
 
-	numberChart
+	parcelasChart
 		.formatNumber(d3.format("d"))
 		.valueAccessor(function(d){return d; })
-		.group(numbers);
-
+		.group(parcelas);
+	/*
 	var map = L.map('map',{
        fullscreenControl: true,
        fullscreenControlOptions: {
@@ -130,8 +160,12 @@ function makeGraphs(error, recordsJson) {
 			max: 100000000,
 			maxZoom: 1
 			//gradient: {0.3: 'blue', 0.5: 'lime', 0.7: 'yellow', 0.9: 'red'}
-		}).addTo(map);
+		}).addTo(map).on('mouseover', onClick);
 	};
+	
+	function onClick(e) {
+		alert(this.getLatLng());
+	}
 	
 	drawMap();
 		
@@ -208,5 +242,12 @@ function makeGraphs(error, recordsJson) {
       })
       dc.redrawAll();
     }
+	*/
 	$(".se-pre-con").fadeOut("slow");
+	
+	
+	
+	dcCharts = [timeChart, ufChart, topCityChart, parcelasChart, timeMonthChart, populacaoChart];
+	
+	dc.renderAll();
 };

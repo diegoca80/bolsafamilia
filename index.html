@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <meta http-equiv="Content-Type" content="text/html"; charset="UTF-8">
+  <link rel="stylesheet" href="static/lib/css//bootstrap.min.css">
+  <link rel="stylesheet" href="static/lib/css/keen-dashboards.css">
+  <link rel="stylesheet" href="static/lib/css/dc.min.css">
+  <link rel="stylesheet" href="static/lib/css/leaflet.css">
+  <link rel="stylesheet" href="static/lib/css/Control.FullScreen.css" />
+  <link rel="stylesheet" href="static/css/custom.css">
+</head>
+
+<body class="application">
+	
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <nav>
+			<a href="#" id="loadDashboard">Dashboard</a>
+			<a href="#" id="loadMap">Mapa</a>
+			<a href="#" id="about">Sobre</a>
+			<div class="animation start-home"></div>
+		</nav>
+      </div>
+    </div>
+  </div>
+ <div id ="content"></div>
+  
+  
+  <script src="static/lib/js/jquery.min.js"></script>
+  <script src="static/js/graphs.js"></script>
+  <script src="static/js/js.js"></script>
+  <script src="static/lib/js/bootstrap.min.js"></script>
+  <script src="static/lib/js/underscore-min.js"></script>
+  <script src="static/lib/js/crossfilter.js"></script>
+  <script src="static/lib/js/d3.min.js"></script>
+  <script src="static/lib/js/dc.js"></script>
+  <script src="static/lib/js/queue.js"></script>
+  <script src="static/lib/js/leaflet.js"></script>
+  <script src="static/lib/js/leaflet-heat.js"></script>
+  <script src="static/lib/js/keen.min.js"></script>
+  <script src="//api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js"></script>
+  <script src="static/lib/js/Control.FullScreen.js"></script>  
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+  
+	<script>
+		$(document).ready( function() {
+			$("#content").load("content.html");
+			
+			$("#loadDashboard").on("click", function() {
+				$.getScript('static/js/graphs.js', function()
+				{
+					// script is now loaded and executed.
+					// put your dependent JS here.
+					$("#content").load("content.html");
+				});
+			});
+			
+			$("#loadMap").on("click", function() {
+				$("#content").load("map.html");
+			});
+			
+			$("#about").on("click", function() {
+				$("#content").load("about.html");
+			});
+		});
+	</script>
+  
+  <!--
+  <script>
+
+  // initialize the map
+  var map = L.map('map').setView([-15.77972, -41.55972], 4);
+
+  // load a tile layer
+  L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
+    {
+      attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
+      maxZoom: 10,
+      minZoom: 2
+    }).addTo(map);
+
+  // load GeoJSON from an external file
+  $.getJSON("municipios.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJson(data).addTo(map);
+  });
+  
+  
+  </script>
+	-->
+</body>
+</html>

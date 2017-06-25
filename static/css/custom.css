@@ -1,5 +1,9 @@
 #number-amount {
-    font-size: 55px;
+    font-size: 45px;
+}
+
+#population-amount {
+    font-size: 45px;
 }
 
 #time-chart .x.axis text {
@@ -26,9 +30,154 @@ if it's not present, don't show loader */
 .se-pre-con {
 	position: fixed;
 	left: 0px;
-	top: 0px;
+	top: 60px;
 	width: 100%;
 	height: 100%;
 	z-index: 9999;
 	background: url(Preloader_8.gif) center no-repeat #fff;
 }
+
+
+
+nav {
+	margin: 10px auto 0;
+	position: relative;
+	width: 590px;
+	height: 50px;
+	background-color: #34495e;
+	border-radius: 8px;
+	font-size: 0;
+}
+nav a {
+	line-height: 50px;
+	height: 100%;
+	font-size: 15px;
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	text-decoration: none;
+	text-transform: uppercase;
+	text-align: center;
+	color: white;
+	cursor: pointer;
+}
+nav .animation {
+	position: absolute;
+	height: 100%;
+	top: 0;
+	z-index: 0;
+	transition: all .5s ease 0s;
+	border-radius: 8px;
+}
+a:nth-child(1) {
+	width: 100px;
+}
+a:nth-child(2) {
+	width: 110px;
+}
+a:nth-child(3) {
+	width: 100px;
+}
+nav .start-home, a:nth-child(1):hover~.animation {
+	width: 100px;
+	left: 0;
+	background-color: #1abc9c;
+}
+nav .start-about, a:nth-child(2):hover~.animation {
+	width: 90px;
+	left: 110px;
+	background-color: #e74c3c;
+}
+nav .start-blog, a:nth-child(3):hover~.animation {
+	width: 100px;
+	left: 210px;
+	background-color: #3498db;
+}
+
+
+
+/* Intro Wrap */
+
+#intro {
+	/*background: #2c3e50;*/
+	padding-top: 60px;
+	padding-bottom: 60px;
+	color: #2c3e50;
+} 
+
+#intro h5, p {
+	color: #2c3e50;
+	text-align: justify;
+    text-justify: inter-word;
+	text-indent: 30px;
+}
+
+#intro i {
+	color: #2c3e50;
+	font-size: 20px;
+	vertical-align: middle;
+}
+
+
+#map{
+	width: 1350px;
+    height: 500px;
+   }
+   
+  .nicebox {
+	top: 60px;
+    position: absolute;
+    text-align: center;
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 13px;
+    z-index: 5;
+    box-shadow: 0 4px 6px -4px #333;
+    padding: 5px 10px;
+    background: rgb(255,255,255);
+    background: linear-gradient(to bottom,rgba(255,255,255,1) 0%,rgba(245,245,245,1) 100%);
+    border: rgb(229, 229, 229) 1px solid;
+  }
+  #controls {
+	top: 60px;
+    left: 110px;
+    width: 370px;
+    height: 55px;
+  }
+  #data-box {
+    top: 60px;
+    left: 500px;
+    height: 55px;
+    line-height: 45px;
+    display: none;
+  }
+  #census-variable {
+    width: 360px;
+    height: 20px;
+  }
+  #legend { display: flex; display: -webkit-box; padding-top: 7px }
+  .color-key {
+    background: linear-gradient(to right,
+	hsl(151, 83%, 34%) 0%,
+    hsl(127, 81%, 37%) 17%, 
+    hsl(102, 78%, 41%) 33%,	
+	hsl(78, 76%, 44%) 50%,
+    hsl(54, 74%, 47%) 67%,
+    hsl(29, 71%, 51%) 83%,
+	hsl(5, 69%, 54%) 100%);
+    flex: 1;
+    -webkit-box-flex: 1;
+    margin: 0 5px;
+    text-align: left;
+    font-size: 1.0em;
+    line-height: 1.0em;
+  }
+  #data-value { font-size: 2.0em; font-weight: bold; padding-right: 20px; }
+  #data-label { font-size: 2.0em; font-weight: normal; padding-right: 10px; }
+  #data-label:after { content: ':' }
+  #data-value-2 { font-size: 2.0em; font-weight: bold; padding-right: 20px;}
+  #data-label-2 { font-size: 2.0em; font-weight: normal; padding-right: 10px; }
+  #data-label-2:after { content: ':' }
+  #data-value-3 { font-size: 2.0em; font-weight: bold;}
+  #data-label-3 { font-size: 2.0em; font-weight: normal; padding-right: 10px; }
+  #data-label-3:after { content: ':' }
+  #data-caret { margin-left: -5px; display: none; font-size: 14px; width: 14px}
