@@ -68,28 +68,5 @@
 		});
 	</script>
   
-  <!--
-  <script>
-
-  // initialize the map
-  var map = L.map('map').setView([-15.77972, -41.55972], 4);
-
-  // load a tile layer
-  L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
-    {
-      attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-      maxZoom: 10,
-      minZoom: 2
-    }).addTo(map);
-
-  // load GeoJSON from an external file
-  $.getJSON("municipios.geojson",function(data){
-    // add GeoJSON layer to the map once the file is loaded
-    L.geoJson(data).addTo(map);
-  });
-  
-  
-  </script>
-	-->
 </body>
 </html>

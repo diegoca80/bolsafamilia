@@ -58,7 +58,128 @@ Os contornos dos mapas foram obtidos dos arquivos Shapefile. O formato shapefile
 
 Para manipular os arquivos CSV foram utilizados scripts de computador desenvolvidos nas linguagens Python e SQL. A transcrição dos arquivos de dados brutos foi feita em SQL para que todo o armazenamento fosse baseado em Banco de Dados Relacional. Para a conversão/integração aos dados cartográficos foram utilizadas as bibliotecas json e pandas em linguagem Python.
 
-Para manipular os arquivos Shapefile foi utilizada a suíte QGIS que permite manipular os arquivos e gerar várias saídas além dos contornos que podem ser usados tanto pelo Google Maps, Google Earth ou mesmo como recursos para serem manipulados em desenvolvimento de aplicativos e páginas WEB. Uma saída da suíte é o formato GeoJSON citado acima.
+O banco de dados relacional que pudesse armazenar os dados obtidos no site do programa foi de grande importância para dar ganho de performance e agilidade na visualização. O banco de dados escolhido foi o MySQL (https://www.mysql.com) por se tratar de um banco de código aberto, que suporta comandos SQL e de fácil instalação.
+
+Os exemplos de script abaixo foram utilizados mais de uma vez, cada vez que o processamento de um mês contendo os dados do programa foram carregados. Seguem os exemplos (considerando o mês de dezembro de 2016):
+
+1. Script para criar uma tabela para armazenar um mês com os dados obtidos do arquivo CSV:
+
+>	CREATE TABLE CSV201612 (
+>	X1 VARCHAR(2),
+>	X2 VARCHAR(5),
+>	X3 VARCHAR(50),
+>	X4 VARCHAR(5),
+>	X5 VARCHAR(5),
+>	X6 VARCHAR(5),
+>	X7 VARCHAR(5),
+>	X8 VARCHAR(20),
+>	X9 VARCHAR(50),
+>	X10 VARCHAR(30),
+>	X11 VARCHAR(10),
+>	X12 VARCHAR(8)
+>	);
+
+2. Script para carregar o arquivo CSV na tabela do banco de dados:
+
+>	LOAD DATA LOCAL INFILE
+>	"201612_BolsaFamiliaFolhaPagamento.csv"
+>	INTO TABLE CSV201612
+>	COLUMNS TERMINATED BY '\t'
+>	OPTIONALLY ENCLOSED BY '"'
+>	ESCAPED BY '"'
+>	LINES TERMINATED BY '\n'
+>	IGNORE 1 LINES;
+
+3. Script para criar a tabela que terá os dados relevantes e que são utilizados na visualização:
+
+>	CREATE TABLE BF201612 (
+>	UF VARCHAR(2),
+>	NOME_MUNICIPIO VARCHAR(50),
+>	NIS_FAVORECIDO VARCHAR(15),
+>	NOME_FAVORECIDO VARCHAR(50),
+>	VALOR_PARCELA DECIMAL(15,2),
+>	ANO_MES_COMPETENCIA VARCHAR(7), 
+>	ANO_MES_PAGAMENTO VARCHAR(7)
+>	);
+
+4. Script para carregar os dados do CSV considerados para a visualização:
+
+>	INSERT INTO BF201612
+>	SELECT 	X1, 
+>	X3, 
+>	X8, 
+>	X9, 
+>	CAST(REPLACE(X11,',','') AS DECIMAL(15,2)),
+>	CONCAT(SUBSTR(X12,4,4),"/",SUBSTR(X12,1,2)), '2016/12'
+>	FROM CSV201612;
+
+5. Script para criar uma tabela contendo os totais por UF, Cidade, Ano e Mês de pagamento. Nesta tabela também serão guardadas as populações de cada localidade (oriundas do IBGE) e dados estatísticos para uso futuro.
+
+>	CREATE TABLE BFTOTAISUF (
+>	UF VARCHAR(2),
+>	NOME_MUNICIPIO VARCHAR(50),
+>	COUNT_BENEFICIADOS INTEGER(10),
+>	SUM_PARCELAS DECIMAL(15,2),
+>	AVG_PARCELAS DECIMAL(15,2),
+>	MIN_PARCELAS DECIMAL(15,2),
+>	MAX_PARCELAS DECIMAL(15,2),
+>	STD_PARCELAS DECIMAL(15,2),
+>	ANO_MES_PAGAMENTO VARCHAR(7),
+>	CD_GEOCMU VARCHAR(7),
+>	POPULACAO DECIMAL(15,2),
+>	PORC_BF DECIMAL(5,2),
+>	ANO VARCHAR(4)
+>	);
+
+6. Script para calcular os dados de cada localidade:
+
+>	INSERT INTO BFTOTAISUF ( 
+>	UF, 
+>	NOME_MUNICIPIO, 
+>	COUNT_BENEFICIADOS, 
+>	SUM_PARCELAS, 
+>	AVG_PARCELAS, 
+>	MIN_PARCELAS, 
+>	MAX_PARCELAS, 
+>	STD_PARCELAS, 
+>	ANO_MES_PAGAMENTO)
+>	SELECT 	UF,
+>	NOME_MUNICIPIO,
+>	COUNT(NIS_FAVORECIDO),
+>	SUM(VALOR_PARCELA),
+>	AVG(VALOR_PARCELA),
+>	MIN(VALOR_PARCELA),
+>	MAX(VALOR_PARCELA),
+>	STD(VALOR_PARCELA),
+>	ANO_MES_PAGAMENTO
+>	FROM 	BF201612
+>	GROUP BY 	UF,
+>	NOME_MUNICIPIO,
+>	ANO_MES_PAGAMENTO;
+
+
+Posteriormente nesta tabela foi feita uma atualização para incluir os valores para os demais campos e calcular a porcentagem da população que recebe o pagamento do programa.
+
+A partir destas tabelas foram geradas as informações que foram carregadas na página do projeto. Para isto, foram utilizados comandos SQL de seleção, agrupamento e contabilização. Como temos para cada mês mais de 1,5 milhão de registros, foram criados índices nas tabelas para aumentar a performance do banco.
+
+A integração dos dados filtrados (gerados com o Banco de Dados) foi realizada utilizando a biblioteca pandas em linguagem Python. Esta plataforma foi escolhida por ser suficientemente flexível para tratar diferentes codificações de arquivo e também manipular um grande volume de dados.
+
+Os CSVs gerados foram lidos utilizando a função read_csv, gerando uma estrutura de dados otimizada chamada dataframe, definida na biblioteca. A partir dessa estrutura é possível fazer buscas por segmentos dos dados, facilitando a correlação necessária para a integração dos mesmos aos dados cartográficos.
+
+O tratamento da codificação dos arquivos é feita a partir da mesma função, utilizando o argumento encoding. O valor para este argumento é ‘latin-1’, capaz de representar caracteres acentuados, típicos da língua portuguesa. Sem esse tratamento não seria possível fazer a leitura dos dados originais sem incorrer em erros de formatação.
+
+Após gerar os dataframes necessários, a segmentação dos mesmos é realizada sob demanda utilizando a função loc. Os argumentos para essa função são alterados dinamicamente, de acordo com o nível de especificidade desejada (dados por município/UF e por mês/ano).
+
+Para realizar a integração propriamente, utilizando como base os arquivos GeoJSON (preenchidos já com os dados cartográficos), foi utilizada a biblioteca json. Essa biblioteca permite a leitura de arquivos JSON em estruturas próprias da linguagem Python (dicionários e listas), com a função load.
+
+Uma vez carregados os arquivos GeoJSON, a rotina do script deve iterar sobre todos os itens da lista de localidades (municípios e estados), integrando os dados correspondentes ao Bolsa Família. Esta é uma tarefa que envolve várias laços de processamento, pois os dados precisam ser carregados de forma estruturada nos dicionários.
+
+Ao concluir a atualização da estrutura de dados, esta precisa ser novamente escrita em um arquivo, para utilização nos sistemas de visualização. Para a conversão em texto é utilizada a função dumps da biblioteca json, que permite controlar características de indentação e codificação. Para a escrita em arquivo é utilizada a função write, nativa da linguagem Python. Essa função recebe o mesmo argumento encoding, utilizada na etapa de leitura do CSV. Entretanto o valor atribuído neste caso é ‘utf-8’, para melhor compatibilidade dos arquivos com os sistemas Web, que são empregados na etapa seguinte. Esse padrão de codificação é o mais adotado e também é capaz de representar os caracteres especiais da língua portuguesa.
+
+Para o desenvolvimento das visualizações finais, utilizou-se diversas bibliotecas em JavaScript como Crossfilter, DC, D3 e Bootstrap. A biblioteca DC.js funciona como uma espécie de extensão ao D3, já que é responsável por possibilitar a utilização de gráficos já customizados no dashboard juntamente com o uso de algumas funções do D3.js. O Crossfilter.js é responsável pela integração entre os gráficos, promovendo a mudança nas coordenadas e valores quando se tem a interação com determinado gráfico do dashboard. Já a biblioteca Bootstrap.js é utilizada para tornar a página responsiva, adaptando para diferentes resoluções de tela.
+
+Além disso, Google Maps API foi utilizado para desenvolvimento do mapa. Suas funcionalidades e adaptações foram usadas juntamente com a biblioteca JQuery.js para o carregamento de arquivos geojson, exibição e eventos de mouse.
+
 
 # Visualizações
 
@@ -66,18 +187,29 @@ A página resultados permite duas visualizações interativas.
  
 A primeira é um painel (dashboard) onde o usuário pode interagir com as diferentes dimensões e em forma gráfica tirar ou confirmar suas próprias interpretações sobre o programa Bolsa Família. Também é possível fazer agrupamentos nesta visualização escolhendo mais de um fato.
  
+Um exemplo de interação com os gráficos seria escolher o ano de 2014 e o mês de outubro como base, além de selecionar os estados do Nordeste do país. Com isso, pode-se notar os cinco municípios que receberam maior quantidade neste período, além do valor total e total de beneficiários.
+
+O Dashboard foi desenvolvido pensando no conceito da análise exploratória de dados, que permite tanto usuários leigos quanto pessoas com certo conhecimento em estatística, avaliarem segundo suas perspectivas, o resultado do programa ao longo dos dados.
+
 A segunda é um mapa do Brasil, inicialmente mostrado com os contornos dos estados. Ao interagir com o contorno de cada estado, é possível ver os valores do programa em um determinado período. Período este que também pode ser alterado. Ao aumentar o nível de detalhe (ou zoom) no mapa, o contorno mostrado passa a ser dos municípios do estado escolhido.  
 
+O período selecionado inicialmente é o de dezembro de 2016, mas o usuário pode escolher outro ano a partir de 2011 e outro mês, ou mesmo o condensado de todos os meses. Ao alterar essa seleção o usuário deverá notar a atualização das cores do mapa, refletindo as novas escalas utilizadas para o período.
+
+As cores de cada região são definidas pela escala da legenda, baseada no percentual da população que recebe o benefício. Quanto maior for esse percentual, mais quente é a cor utilizada. A partir dessa percepção o usuário pode comparar as diferentes regiões, indicando onde uma maior parte da população participa do programa.
+
+Ao clicar sobre um dos estados é possível ver os mesmos dados a nível de municípios. O mapa contendo os contornos de cada município é carregados com os respectivos dados. A interação se dá de maneira semelhante àquela com os estados, assim como a atribuição de cores segue o mesmo princípio, respeitando a abrangência do estado. Para retornar à visualização de todos os estados basta clicar em qualquer município da visualização corrente.
+
+Para enriquecer a percepção sobre os dados é apresentado para cada região o valor total destinado pelo programa. Assim o usuário pode facilmente entender a ordem de grandeza, juntamente com a abrangência, dos recursos do programa.
 
 # Premissas
 
 Considerando que os dados trabalhados tem relação direta com localidades no território brasileiro, a premissa diretriz para o projeto de visualização foi a representação dos mesmos utilizando os mapas dos estados e municípios como base.
 
-Para tornar a comparação entre regiões mais intuitiva foram também consideradas diferentes escalas de cor e como melhor atribuir colorações aos valores dos pagamentos do programa BF.
+Para tornar a comparação entre regiões mais intuitiva foram também consideradas diferentes escalas de cor e como melhor atribuir colorações a cada região. Inicialmente foram utilizados os valores dos pagamentos do programa Bolsa Família para gerar a escala, conferindo cores mais quentes às regiões que recebiam valores maiores em dado período. Entretanto observou-se que esse parâmetro não trazia uma percepção satisfatória, uma vez que estados mais populosos poderiam receber mais recursos sem que isso efetivamente significasse uma condição mais favorável. Assim foi definido que a escala de cores seria baseada nas proporções da população beneficiada pelo programa, indicando efetivamente a abrangência em cada região.
 
 # Resultados
 
-Como resultados expressivos do projeto, podemos destacar a possibilidade de navegar em diversas dimensões (UF, estado, ano e mês) para ver os fatos que se deseja interpretar e avaliar (Data mining). É possível visualizar número de beneficiados, valores das parcelas, número de municípios das parcelas considerando as dimensões acima. Além disso, a visualização no mapa permite verificar detalhes mais específicos das localidades consideradas.
+Como resultados expressivos do projeto, podemos destacar a possibilidade de navegar em diversas dimensões (UF, estado, ano e mês) para ver os fatos que se deseja interpretar e avaliar (Data mining). Utilizando o dashboard é possível visualizar o número de beneficiados, os valores totais das parcelas, os principais municípios e a distribuição pelos estados. Além disso, a visualização no mapa permite comparar as regiões por cores, utilizando os filtros mencionados.
 
 # Lições aprendidas
 
