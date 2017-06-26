@@ -4,7 +4,7 @@ $.getJSON('data/records.json', function (data) {
 
 function makeGraphs(recordsJson) {
 	var records = recordsJson;
-	console.log(records);
+	
 	records.forEach(function(d) {
     d["POPULACAO"] = +d["POPULACAO"];
     d["PORC_BF"] = +d["PORC_BF"];
@@ -59,7 +59,7 @@ function makeGraphs(recordsJson) {
 	
 	timeChart
 		.width(450)
-		.height(250)
+		.height(280)
 		.margins({top: 10, right: 50, bottom: 30, left: 80})
 		.dimension(yearDim)
 		.group(yearGroup)
@@ -74,7 +74,7 @@ function makeGraphs(recordsJson) {
 		
 	timeMonthChart
 		.width(450)
-		.height(250)
+		.height(280)
 		.margins({top: 10, right: 50, bottom: 30, left: 80})
 		.dimension(monthDim)
 		.group(monthGroup)
@@ -87,8 +87,8 @@ function makeGraphs(recordsJson) {
 	timeMonthChart.xAxis().tickFormat(d3.format('f'));
 	
 	ufChart
-        .width(400)
-        .height(555)
+        .width(450)
+        .height(615)
         .dimension(ufDim)
         .group(ufGroup)
 		.colors("#7F97E0")
@@ -98,12 +98,12 @@ function makeGraphs(recordsJson) {
 	
 	topCityChart
 		.width(550)
-		.height(320)
+		.height(380)
 		.slicesCap(5)
 		.innerRadius(30)
 		.drawPaths(true)
 		.colors(d3.scale.category10())
-		.externalRadiusPadding(30)
+		.externalRadiusPadding(50)
 		.dimension(cityDim)
 		.group(cityGroup5)
 		.legend(dc.legend())
@@ -119,7 +119,7 @@ function makeGraphs(recordsJson) {
             .append('tspan')
               .text(function(d) { return d.name; })
             .append('tspan')
-              .attr('x', 150)
+              .attr('x', 170)
               .attr('text-anchor', 'end')
               .text(function(d) { return d.data; });
     });
